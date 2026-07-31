@@ -83,7 +83,6 @@ for i=1:length(theta)
         case 'Poly'
             S_ = S_ +...
                 PolySEDFder_I4(n,caux,C_)*dI4;
-                %PolySEDFder_I4(n,caux,C_)*psi(i)*dI4;
     end
 
     c4 = c4(N-1:end); % Update the coefficients for the next invariant
