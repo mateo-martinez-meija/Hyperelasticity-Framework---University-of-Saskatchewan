@@ -79,7 +79,6 @@ for i=1:length(theta)
     caux = c4(1:N-1);
     dI4 = Inv4(C_,n,"der");
 
-    % Numerical integration
     switch model
         case 'Poly'
             S_ = S_ +...
