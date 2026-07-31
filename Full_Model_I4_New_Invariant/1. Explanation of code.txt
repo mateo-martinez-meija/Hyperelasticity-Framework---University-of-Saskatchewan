@@ -1,0 +1,18 @@
+This folder contains the scripts for calculating the stress tensor in the Eulerian configuration considering the both the isotropic (matrix) and anisotropic (fibers) components for the Strain-Energy Density Function. In this case we will only consider the first anisotropic invariant I4.
+
+XRD Data: Clean_XRD_Data_180.xlsx
+Mechanical Data: Mechanical_data.xlsx
+
+Commands to retrieve the data (Example for HCNC-SF Data): 
+
+- dataHCNC_SF = readtable("Clean_XRD_Data_180.xlsx", "Sheet", "HCNC", "Range","A2:B1889");
+- MechDataHCNC = readtable("Mechanical_data.xlsx", "Sheet", "HCNC-SF", "Range","D3:E170");
+- MechDataHCNC_Perp = readtable("Mechanical_data.xlsx", "Sheet", "HCNC-SF", "Range","A3:B170")
+
+The function CNC_SF_PolyFit will return the coefficients for a model with Mooney-Rivlin isotropic component and a Polynomial (degree n - defined as an argument) anisotropic component. In this folder, we are integrating over the interval [0,2*pi] with the data from the XRD analysis of the sample that contains the information for the fiber orientations. Here we also graph the result of the fitted model with respect to the mechanical data.
+
+The function EvalStress3D_Full_I4 returns a list of Cauchy stress values for a given list of strain values given as an argument. 
+
+The function MRCauchyStress3D_Full_I4 returns the Cauchy stress value for a single value of strain given as an argument. Here we calculate the second Piola-Kirchhoff tensor and use the third dimension to find the hydrostatic pressure. 
+
+The function PolySEDFder_I4 defines the derivative of the anisotropic component of the strain-energy density function.
