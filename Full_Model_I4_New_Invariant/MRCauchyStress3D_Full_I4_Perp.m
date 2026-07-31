@@ -1,8 +1,10 @@
 % This function calculates the Cauchy stress tensor in a 3 dimensional
-% Eulerian configuration setup for a given value of strain. We start by
-% calculating the second Piola-Kirchhoff tensor numerically for a given
-% strain energy density function for each individual fiber. We use the PK2
-% to calculate the Cauchy stress tensor and nominal stress. We consider a
+% setup for a given value of strain. We start by calculating the stretches 
+% using the traction-free conditions. Then we calculate the second 
+% Piola-Kirchhoff tensor numerically for a given
+% strain energy density function. Currently, only using a polynomial SEDF. We 
+% calcualte the hydrostatic pressure to find the Cauchy stress tensor. 
+% Then, we calculate the nominal stress and return it. We consider a
 % Mooney-Rivlin model for the isotropic component.
 
 % data = XRD data (angles and intensity)
