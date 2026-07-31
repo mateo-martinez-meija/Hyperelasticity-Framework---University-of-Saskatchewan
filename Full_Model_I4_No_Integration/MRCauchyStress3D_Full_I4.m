@@ -95,7 +95,7 @@ dI2 = Inv2(C_,"der");
 % We include the isotropic component
 S_ = 2*(a*dI1 + b*dI2 + S_);
 
-% Find the Cauchy stress in the Lagrangian configuration
+% Find the Cauchy stress
 sigmaAux = (1/det(F_))*F_*S_*transpose(F_);
 p = sigmaAux(3,3); % Calculate the hydrostatic pressure
 sigma = sigmaAux - p*eye(3);
