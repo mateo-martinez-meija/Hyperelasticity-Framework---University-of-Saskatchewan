@@ -9,9 +9,9 @@
 % n = Degree of polynomial for each anisotropic invariant
 % m = Number of fiber families considered
 
-function [coeff,Error] = CNC_SF_PolyFit(XRD_Data,Mech_Data_Par,Mech_Data_Perp,n,m)
+function [coeff,Error] = CNC_SF_PolyFit(Mech_Data_Par,Mech_Data_Perp,n,m)
 
-[w,theta] = weights(XRD_Data,m);
+theta = FiberDirections(m);
 Mech_Data_Par = table2array(Mech_Data_Par); % Parallel Stress
 Mech_Data_Perp = table2array(Mech_Data_Perp); % Perpendicular Stress
 
@@ -28,10 +28,10 @@ stress = [ydata_Par;ydata_Perp]; % Stress data for both tests
 
 % Define the strain-energy density function 
 fun_SF_Par = @(cPoly,xdata_Par)EvalStress3D_Full_I4(theta,xdata_Par,...
-             cPoly,["MR","Poly"],n,m);
+             cPoly,["MR","Poly"],n);
 fun_SF_Perp = @(cPoly,xdata_Perp)EvalStress3D_Full_I4(theta,...
-              xdata_Perp,cPoly,["MR_Perp","Poly"],n,m);
-fun_SF = @(cPoly,strain)EvalSQfit(theta,strain,cPoly,["MR","Poly"],n,m);
+              xdata_Perp,cPoly,["MR_Perp","Poly"],n);
+fun_SF = @(cPoly,strain)EvalSQfit(theta,strain,cPoly,["MR","Poly"],n);
 
 % Initial coefficients
 n = n-1; % Update n to be number of terms instead of degree of polynomial
@@ -40,30 +40,19 @@ aux2 = ones(1,n*m);
 cPoly0 = [aux1,aux2];
 
 % Define the constraints for stability
-w = weights(XRD_Data,m);
-eps = 0.000001;
+eps = realmin;
 aux3 = zeros(1,n*m);
 A1 = [-1,0,aux3]; % First stability condition
-A2 = [0,-1,aux3];
-% A3 = [-1,-1,0,aux3];
-% A = [-1,-1,0,aux3;0,-1,-1,aux3]; 
+A2 = [0,-1,aux3]; % Second stability condition
 Aaux = [];
-for i = 1:length(w)
-    %aux3 = zeros(1,n*m);
+for i = 1:length(theta)
     aux4 = zeros(1,n*m);
-    %aux3(n*(i-1) + 1) = -8*w(i)/3;
     aux4(n*(i-1) + 1) = -1;
-    Aaux = [Aaux;0,0,aux4];
+    Aaux = [Aaux;0,0,aux4]; % Additional stability conditions
 end
-% A2 = [-2,-12,-10,aux3]; % Second stability condition
-% A3 = [-1,-2,-1,zeros(1,n*m)];
-% A4 = [0,-1,-1,zeros(1,n*m)];
 
 A = [A1;A2;Aaux];
-%A = [A1;Aaux];
 b = [-eps;-eps;-eps+zeros(m,1)];
-%b = [eps;eps+zeros(m,1)];
-% b = [0;0;zeros(m,1)] + eps;
 lb = [];
 ub = [];
 
