@@ -1,10 +1,8 @@
 % This function calculates the Cauchy stress tensor in a 3 dimensional
-% Eulerian configuration setup for a given value of strain. We start by
-% calculating the second Piola-Kirchhoff tensor numerically for a given
-% strain energy density function for each individual fiber. We use the PK2
-% to calculate the Cauchy stress tensor in the Lagrangian configuration and
-% we push it forward by using the deformation gradient. We consider a
-% Mooney-Rivlin model for the isotropic component.
+% setup for a given value of strain. We start by calculating the second 
+% Piola-Kirchhoff tensor numerically for a given strain energy density function
+% for each individual fiber. We use the PK2 to calculate the Cauchy stress tensor.
+% We consider a Mooney-Rivlin model for the isotropic component.
 
 % s = strain percentage
 % c = coefficients
@@ -14,7 +12,6 @@ function CauchyStress = MRCauchyStress3D_CN_I4(s,c)
 a = c(1);
 b = c(2);
 c4 = c(4:end); % Coefficients for I4
-% p = c(end); % Hydrostatic pressure
 lambda = 1 + s/100; % We calculate the strain ratio 
 S_ = [0,0,0;0,0,0;0,0,0];
 
@@ -32,17 +29,12 @@ I2 = Inv2(C_,"inv");
 
 % We include the isotropic component
 S_ = 2*(a*dI1 + b*dI2);
-% S_ = 2*(a*((I1-3))*dI1 + b*((I2-3)^2)*dI2);
 
 % Find the Cauchy stress in the Lagrangian configuration
 sigmaAux = (1/det(F_))*F_*S_*transpose(F_);
-p = sigmaAux(3,3);
+p = sigmaAux(3,3); % Calculate the hydrostatic pressure
 sigma = sigmaAux - p*eye(3);
 
-% Using the push-forward mapping to find the stress in the Eulerian
-% configuration
-% aux = transpose(F_)\sigma/F_;
-
 % We only consider sigma_yy to compare to experimental data
-CauchyStress = sigma(2,2)/lambda;
+CauchyStress = sigma(2,2)/lambda; % We calculate the nominal stress
 end
