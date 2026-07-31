@@ -16,25 +16,17 @@ function CauchyStress = MRCauchyStress3D_Full_I4_Perp(M_,s,c,model)
 
 a = c(1);
 b = c(2);
-c4 = c(3:end); % Coefficients for I4
-lambda = (1 + s/100)^2; % We calculate the strain ratio 
-%data = table2array(data);
-%theta = data(:,1); % XRD angle
-%psi = data(:,2); % XRD intensity
-S_ = [0,0,0;0,0,0;0,0,0];
-% S_ = [0,0;0,0];
-%M_ = StructTensor(psi,theta);
+c4 = c(3:end); % Coefficients for I4*
+lambda = (1 + s/100)^2; % We calculate the stretch ratio squared
+S_ = [0,0,0;0,0,0;0,0,0]; % Initialize the secon Piola-Kirchhoff tensor
+
 
 c1 = c4(1);
 c2 = c4(2);
 m1 = M_(1,1);
 m2 = M_(2,2);
 
-%lambda1_fun = @(y)3*c2*(m1^3)*lambda*y^4 ...
-%        + (2*c1*lambda*m1^2 + 6*c2*(m1^2)*lambda*(m2*(lambda-1)-m1))*y^3 ...
-%        + (a*lambda + b*lambda^2 + 2*c1*m1*lambda*(m2*(lambda-1)-m1) ...
-%        + 3*c2*m1*lambda*(m2*(lambda-1)-m1)^2)*y^2 - a - b*lambda;
-%x0 = [0,1];
+% Calculate the stretches from the traction-free conditions
 poly1 = 3*c2*(m2^3)*lambda;
 poly2 = 2*c1*lambda*m2^2 + 6*c2*(m2^2)*lambda*(m1*(lambda-1)-m2);
 poly3 = a*lambda + b*lambda^2 + 2*c1*m2*lambda*(m1*(lambda-1)-m2) ...
@@ -44,71 +36,42 @@ poly5 = - a - b*lambda;
 poly = [poly1,poly2,poly3,poly4,poly5];
 
 aux = roots(poly);
-%aux
-%if sign(lambda1_fun(0))==sign(lambda1_fun(1))
-%    CauchyStress = 0;
-%    return
-%else
-%    lambda1 = fzero(lambda1_fun,x0)
+% Choose the real positive root of the polynomial
 i=4;
 while ~isreal(aux(i)) || aux(i)<0
     i=i-1;
 end
 lambda1 = aux(i);
+
+% Calculate the stretches
 lambda3 = 1/sqrt(lambda*lambda1);
 lambda1 = sqrt(lambda1);
 lambda = sqrt(lambda);
 
 % We consider a stress applied parallel to the fibers which are pointing in
 % the direction of the y-axis
-% F_ = [lambda,0,0;0,1/lambda^(1/2),0;0,0,1/lambda^(1/2)];
-F_ = diag([lambda,lambda1,lambda3]);
-% F_ = diag([lambda,1/lambda]);
-C_ = transpose(F_)*F_;
+F_ = diag([lambda,lambda1,lambda3]); % Deformation gradient
+C_ = transpose(F_)*F_; % Right Cauchy-Green tensor
 
 switch model
    case 'Poly'
             S_ = S_ +...
                 PolySEDFder_I4_star(C_,M_,c4)*M_;
-        
-    case 'Exp'
-            S_ = S_ +...
-                ExpSEDFder_I4(n,c4,C_);
-
-    case 'HS1'
-            S_ = S_ +...
-                HS1SEDFder_I4(n,c4,C_);
-
-    case 'HS2'
-            S_ = S_ +...
-                HS2SEDFder_I4(n,c4,C_);
-
 end
 
-% We define the invariant I1 for the derivative of I2
+% We define the derivatives of I1 and I2
 dI1 = Inv1(C_,"der");
 dI2 = Inv2(C_,"der");
-% dI3 = Inv3(C_,"der");
 
 % We include the isotropic component
 S_ = 2*(a*dI1 + b*dI2 + S_);
 
-% Find the Cauchy stress in the Eulerian configuration
+% Find the Cauchy stress
 sigmaAux = (1/det(F_))*F_*S_*transpose(F_);
-% Paux_ = F_*S_;
-p = sigmaAux(3,3);
+p = sigmaAux(3,3); % Calculate the hydrostatic pressure
 sigma = sigmaAux - p*eye(3);
-% p = sigmaAux(2,2);
-% p = Paux_(2,2);
-% sigma = sigmaAux - p*eye(2);
-% P_ = Paux_ - p*transpose(inv(F_));
-
-% Using the push-forward mapping to find the stress in the Eulerian
-% configuration
-% aux = transpose(F_)\sigma/F_;
 
 
 % We only consider sigma_xx to compare to experimental data
-CauchyStress = sigma(1,1)/lambda;
-% CauchyStress = P_(1,1);
+CauchyStress = sigma(1,1)/lambda; % We calculate the nominal stress
 end
