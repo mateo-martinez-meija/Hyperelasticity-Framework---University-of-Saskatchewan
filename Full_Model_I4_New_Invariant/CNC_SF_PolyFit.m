@@ -41,20 +41,18 @@ n = n-1; % Update n to be number of terms instead of degree of polynomial
 aux1 = [10,10];
 aux2 = ones(1,n);
 cPoly0 = [aux1,aux2];
-%cPoly0 = [0.0268428877,0.0261923360,0.0642140098,34.49837945];
 
 % Define the constraints for stability
 eps = realmin;
 aux3 = zeros(1,n);
 A1 = [-1,0,aux3]; % First stability condition
-A2 = [0,-1,aux3];
+A2 = [0,-1,aux3]; % Second stability condition
 aux3(1) = -1;
-A3 = [0,0,aux3];
+A3 = [0,0,aux3]; % Additional stability conditions
 
 A = [A1;A2;A3];
 b = [-eps;-eps;-eps];
-% b = [0;0;zeros(m,1)] + eps;
-lb = [];
+lb = []; 
 ub = [];
 
 % Least Square Curve Fit
