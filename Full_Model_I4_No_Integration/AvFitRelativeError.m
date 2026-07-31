@@ -1,18 +1,15 @@
 % This function calculates the average relative error of the model 
 
-% ODF = XRD data
 % strain = strain data
 % stress = stress data
 % c = fitted coefficients of the model
 % model = model used for the fitting
-% N = Degree of polynomial for each anisotropic invariant
-% M = Number of fiber families considered
+% M_ = structure tensor
 
 
-function error = AvFitRelativeError(theta,strain,stress,c,model,N,M)
+function error = AvFitRelativeError(M_,strain,stress,c, model)
 
-%n = length(strain);
-ExpStress = EvalSQfit(theta,strain,c,model,N,M);
+ExpStress = EvalSQfit(M_,strain,c,model);
 
 res = norm(ExpStress-stress);
 aux = norm(stress);
