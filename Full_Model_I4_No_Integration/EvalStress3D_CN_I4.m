@@ -15,7 +15,6 @@ switch model
     case 'MR' % Mooney-Rivlin model
         for i=1:n
             Stress = [Stress;...
-                %CauchyStress3D_Full_I4(data,strain(i),c4,Aniso)];
                 MRCauchyStress3D_CN_I4(strain(i),c)];
         end
 end
