@@ -18,10 +18,10 @@ stress = Mech_Data(:,2);
 fun_CN = @(c_MR,xdata_Par)EvalStress3D_CN_I4(xdata_Par,c_MR,"MR");
 
 % Initial coefficients
-cMR0 = [0.1,0.001];
+cMR0 = [10,10];
 
 % Define the constraints for stability
-eps = 0.000001;
+eps = realmin;
 A1 = [-1,0]; % First stability condition
 A2 = [0,-1]; % Second stability condition
 
