@@ -59,9 +59,7 @@ j=4;
 while ~isreal(aux(j)) || aux(j)<0
     j=j-1;
 end
-%if i~=4
-%    aux
-%end
+
 lambda1 = aux(j);
 
 % Calculate the stretches
