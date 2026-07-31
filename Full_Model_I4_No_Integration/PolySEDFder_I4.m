@@ -8,8 +8,6 @@
 
 function eval = PolySEDFder_I4(n,c,C_)
 
-%C_ = [1/lambda,0,0;0,lambda^2,0;0,0,1/lambda];
-%n = [cos(theta_i),sin(theta_i),0];
 I4 = Inv4(C_,n,"inv");
 
 eval = 0;
