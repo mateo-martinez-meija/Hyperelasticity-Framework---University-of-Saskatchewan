@@ -1,3 +1,6 @@
+% This function returns the scalar residuals for each load
+% case (parallel or perpendicular), in terms of lambda1. 
+
 % lambda1 = variable for traction-free condition
 % lambda = stretch
 % theta = angles for fiber families
