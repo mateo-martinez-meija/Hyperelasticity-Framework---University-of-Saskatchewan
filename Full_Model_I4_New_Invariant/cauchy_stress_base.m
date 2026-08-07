@@ -1,5 +1,9 @@
+% This function calculates the constitutive component of the Cauchy
+% stress tensor.
 
-
+% M_ = Structure tensor
+% c = model coefficients
+% F_ = deformation gradient
 
 function sigma_b = cauchy_stress_base(M_,c,F_)
 
