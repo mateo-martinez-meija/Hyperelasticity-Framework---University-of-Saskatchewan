@@ -3,13 +3,12 @@
 % strain = strain data
 % stress = stress data
 % c = fitted coefficients of the model
-% model = model used for the fitting
 % M_ = structure tensor
 
 
-function error = AvFitRelativeError(M_,strain,stress,c, model)
+function error = AvFitRelativeError(M_,strain,stress,c)
 
-ExpStress = EvalSQfit(M_,strain,c,model);
+ExpStress = EvalSQfit(M_,strain,c);
 
 res = norm(ExpStress-stress);
 aux = norm(stress);
