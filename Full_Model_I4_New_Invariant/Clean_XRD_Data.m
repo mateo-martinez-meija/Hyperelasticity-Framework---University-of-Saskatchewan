@@ -39,6 +39,5 @@ Integral = delta*sum(sym_psi);
 norm_sym_psi = sym_psi/Integral;
 
 new_data = [rad_angle,norm_sym_psi];
-%plot(rad_angle,norm_sym_psi,'b-')
 
 end
