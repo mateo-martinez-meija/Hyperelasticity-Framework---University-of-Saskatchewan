@@ -1,4 +1,6 @@
-
+% This function takes the original XRD data and returns a new dataset
+% that is clean, symmetrized, and normalized. Additionally, the angles 
+% are changed to radians. 
 
 function new_data = Clean_XRD_Data(XRD_Data)
 
