@@ -31,10 +31,10 @@ stress = [ydata_Par;ydata_Perp]; % Stress data for both tests
 
 % Define the strain-energy density function 
 fun_SF_Par = @(cPoly,xdata_Par)EvalStress3D_Full_I4(M_,xdata_Par,...
-             cPoly,["MR","Poly"]);
+             cPoly,'parallel');
 fun_SF_Perp = @(cPoly,xdata_Perp)EvalStress3D_Full_I4(M_,...
-              xdata_Perp,cPoly,["MR_Perp","Poly"]);
-fun_SF = @(cPoly,strain)EvalSQfit(M_,strain,cPoly,["MR","Poly"]);
+              xdata_Perp,cPoly,'perpendicular');
+fun_SF = @(cPoly,strain)EvalSQfit(M_,strain,cPoly);
 
 % Initial coefficients
 n = n-1; % Update n to be number of terms instead of degree of polynomial
@@ -60,7 +60,7 @@ coeff = lsqcurvefit(fun_SF,cPoly0,strain,stress,lb,ub,A,b);
 
 %--------- ERROR -----------
 
-Error = AvFitRelativeError(M_,strain,stress,coeff,["MR","Poly"]);
+Error = AvFitRelativeError(M_,strain,stress,coeff);
 
 %--------- PLOT -----------
 
