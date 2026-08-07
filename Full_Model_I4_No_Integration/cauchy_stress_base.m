@@ -1,4 +1,10 @@
+% This function calculates the constitutive component of the Cauchy
+% stress tensor.
 
+% theta = Fiber directions
+% c = model coefficients
+% F_ = deformation gradient
+% N = Degree of polynomial model
 
 
 function sigma_b = cauchy_stress_base(theta,c,F_,N)
