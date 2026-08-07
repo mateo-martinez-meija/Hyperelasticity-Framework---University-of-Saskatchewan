@@ -28,10 +28,10 @@ stress = [ydata_Par;ydata_Perp]; % Stress data for both tests
 
 % Define the strain-energy density function 
 fun_SF_Par = @(cPoly,xdata_Par)EvalStress3D_Full_I4(theta,xdata_Par,...
-             cPoly,["MR","Poly"],n);
+             cPoly,'parallel',n);
 fun_SF_Perp = @(cPoly,xdata_Perp)EvalStress3D_Full_I4(theta,...
-              xdata_Perp,cPoly,["MR_Perp","Poly"],n);
-fun_SF = @(cPoly,strain)EvalSQfit(theta,strain,cPoly,["MR","Poly"],n);
+              xdata_Perp,cPoly,'perpendicular',n);
+fun_SF = @(cPoly,strain)EvalSQfit(theta,strain,cPoly,n);
 
 % Initial coefficients
 n = n-1; % Update n to be number of terms instead of degree of polynomial
@@ -56,13 +56,31 @@ b = [-eps;-eps;-eps+zeros(m,1)];
 lb = [];
 ub = [];
 
+% Define constraints to impose shear-free condition 
+aux1 = [0,0];
+Aeq = [];
+
+for i=1:m
+    % If i is odd skip this step
+    if mod(i,2) == 1
+        continue;
+    end
+    for j=1:n
+        aux = zeros(1,n*m);
+        aux((i-1)*n + j) = 1;
+        aux(i*n + j) = -1;
+        Aeq = [Aeq;[aux1,aux]];
+    end
+end
+beq = zeros(size(Aeq,1),1);
+
 % Least Square Curve Fit
-coeff = lsqcurvefit(fun_SF,cPoly0,strain,stress,lb,ub,A,b);
+coeff = lsqcurvefit(fun_SF,cPoly0,strain,stress,lb,ub,A,b,Aeq,beq);
 
 %--------- ERROR -----------
 
 Error = AvFitRelativeError(theta,strain,stress,coeff,["MR","Poly"],...
-    n+1,m); % Change to n+1 since we updated n-->n-1 previously
+    n+1); % Change to n+1 since we updated n-->n-1 previously
 
 %--------- PLOT -----------
 
